@@ -1,0 +1,12 @@
+services:
+  postgres_personal_finance_tracker:
+    image: postgres:15
+    container_name: personal_finance_tracker_db_container
+    environment:
+      POSTGRES_DB: personal_finance_tracker_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root1234
+    volumes:
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    ports:
+      - "5435:5432"
