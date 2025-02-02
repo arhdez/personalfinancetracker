@@ -9,7 +9,7 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class SpendsDto {
+public class SpendDto {
 
     @JsonProperty("spend_id")
     private UUID spendId;

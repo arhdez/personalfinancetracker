@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Entity
 @Data
-public class Spends {
+public class Spend {
 
     @Id
     private UUID spendId;
