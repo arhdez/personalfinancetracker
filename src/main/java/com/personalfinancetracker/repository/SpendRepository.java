@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface SpendsRepository extends CrudRepository<Spend, UUID>, PagingAndSortingRepository<Spend, UUID> {
+public interface SpendRepository extends CrudRepository<Spend, UUID>, PagingAndSortingRepository<Spend, UUID> {
 }
