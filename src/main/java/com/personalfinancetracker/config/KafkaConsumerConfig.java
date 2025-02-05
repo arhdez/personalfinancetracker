@@ -1,6 +1,6 @@
 package com.personalfinancetracker.config;
 
-import com.personalfinancetracker.dto.PersonKafkaConsumerDto;
+import com.personalfinancetracker.dto.PersonDto;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;
@@ -22,26 +22,26 @@ public class KafkaConsumerConfig {
     private Map<String, Object> consumerConfig() {
         Map<String, Object> properties = new HashMap<>();
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        properties.put(ConsumerConfig.GROUP_ID_CONFIG, "personal-consumer-tracker-api-group");
+        properties.put(ConsumerConfig.GROUP_ID_CONFIG, "person-api-group");
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
         return properties;
     }
 
     @Bean
-    public ConsumerFactory<String, PersonKafkaConsumerDto> consumerFactory() {
-        JsonDeserializer<PersonKafkaConsumerDto> deserializer = new JsonDeserializer<>(PersonKafkaConsumerDto.class);
+    public ConsumerFactory<String, PersonDto> consumerFactory() {
+        JsonDeserializer<PersonDto> deserializer = new JsonDeserializer<>(PersonDto.class);
         deserializer.setRemoveTypeHeaders(false);
         deserializer.setUseTypeMapperForKey(true);
 
-        ErrorHandlingDeserializer<PersonKafkaConsumerDto> errorHandlingDeserializer = new ErrorHandlingDeserializer<>(deserializer);
+        ErrorHandlingDeserializer<PersonDto> errorHandlingDeserializer = new ErrorHandlingDeserializer<>(deserializer);
 
         return new DefaultKafkaConsumerFactory<>(consumerConfig(), new StringDeserializer(), errorHandlingDeserializer);
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, PersonKafkaConsumerDto> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, PersonKafkaConsumerDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, PersonDto> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, PersonDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
 
         DefaultErrorHandler errorHandler = new DefaultErrorHandler((record, exception) ->

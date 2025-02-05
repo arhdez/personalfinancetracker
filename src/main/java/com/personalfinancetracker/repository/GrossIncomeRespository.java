@@ -9,4 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface GrossIncomeRespository extends CrudRepository<GrossIncome, UUID>, PagingAndSortingRepository<GrossIncome, UUID> {
+    boolean existsByPersonId(UUID personId);
 }

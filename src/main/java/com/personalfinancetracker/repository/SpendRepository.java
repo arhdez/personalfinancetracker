@@ -9,4 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface SpendRepository extends CrudRepository<Spend, UUID>, PagingAndSortingRepository<Spend, UUID> {
+    boolean existsById(UUID spendId);
 }
