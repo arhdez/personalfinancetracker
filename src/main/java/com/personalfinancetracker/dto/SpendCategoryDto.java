@@ -15,7 +15,7 @@ public class SpendCategoryDto {
     private UUID categoryId;
 
     @JsonProperty("category_name")
-    @NotBlank(groups = CreateGroup.class)
-    @NotNull(groups = CreateGroup.class)
+    @NotBlank
+    @NotNull
     private String categoryName;
 }

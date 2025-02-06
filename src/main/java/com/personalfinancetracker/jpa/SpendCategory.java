@@ -1,7 +1,6 @@
 package com.personalfinancetracker.jpa;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.UUID;
@@ -11,6 +10,9 @@ import java.util.UUID;
 public class SpendCategory {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID categoryId;
+
+    @Column(name = "category_name")
     private String categoryName;
 }
