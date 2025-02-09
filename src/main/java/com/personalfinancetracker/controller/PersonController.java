@@ -27,6 +27,9 @@ public class PersonController {
             @RequestParam(required = false) String lastName,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) String dateOfBirth,
+            // New dynamic ordering parameters:
+            @RequestParam(required = false) String orderField,
+            @RequestParam(required = false) String orderDirection,
             Pageable pageable
     ) {
         PersonDto request = new PersonDto();
@@ -34,7 +37,7 @@ public class PersonController {
         request.setLastName(lastName);
         request.setEmail(email);
         request.setDateOfBirth(dateOfBirth);
-        List<PersonDto> personsOptional = personService.searchPeople(request, pageable);
-        return ResponseEntity.ok(personService.searchPeople(request, pageable));
+
+        return ResponseEntity.ok(personService.searchPeople(request, pageable, orderField, orderDirection));
     }
 }

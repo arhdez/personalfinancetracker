@@ -24,33 +24,52 @@ public class PersonService {
     private final PersonRepository personRepository;
     private final PersonMapper personMapper;
 
-    public List<PersonDto> searchPeople(PersonDto request, Pageable pageable) {
+    public List<PersonDto> searchPeople(PersonDto request, Pageable pageable,
+                                        String orderField, String orderDirection) {
         Specification<Person> specification = PersonSpecification.search(request);
-        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSortOr(Sort.by(Sort.Direction.ASC, "firstName")));
+
+        PageRequest pageRequest = createPageRequest(pageable, orderField, orderDirection);
+
         Page<Person> personPage = personRepository.findAll(specification, pageRequest);
         return personPage.getContent().stream().map(personMapper::personToPersonDto).collect(Collectors.toList());
     }
 
-    public void processPerson(PersonDto personDto){
-        if (personRepository.existsById(personDto.getPersonId())){
+    public void processPerson(PersonDto personDto) {
+        if (personRepository.existsById(personDto.getPersonId())) {
             updatePerson(personDto, personDto.getPersonId());
-        }else{
+        } else {
             createPerson(personDto);
         }
     }
 
-    public PersonDto createPerson(PersonDto personDto){
+    public PersonDto createPerson(PersonDto personDto) {
         return personMapper.personToPersonDto(personRepository.save(personMapper.personDtoToPerson(personDto)));
     }
 
-    public Optional<PersonDto> updatePerson(PersonDto personDto, UUID requestedId){
+    public Optional<PersonDto> updatePerson(PersonDto personDto, UUID requestedId) {
         Optional<Person> existingPersonOptional = personRepository.findById(requestedId);
-        if (existingPersonOptional.isPresent()){
+        if (existingPersonOptional.isPresent()) {
             Person existingPerson = existingPersonOptional.get();
             personMapper.updatePerson(existingPerson, personDto);
             return Optional.of(personMapper.personToPersonDto(personRepository.save(existingPerson)));
         }
         return Optional.empty();
+    }
+
+    private PageRequest createPageRequest(Pageable pageable, String orderField, String orderDirection) {
+        Sort sort = pageable.getSort();
+
+        if (!sort.isSorted() && orderField != null && !orderField.isEmpty()) {
+            Sort.Direction direction = Sort.Direction.ASC;
+            if (orderDirection != null && orderDirection.equalsIgnoreCase("desc")) {
+                direction = Sort.Direction.DESC;
+            }
+            sort = Sort.by(direction, orderField);
+        }
+        if (!sort.isSorted()) {
+            sort = Sort.by(Sort.Direction.ASC, "firstName");
+        }
+        return PageRequest.of(pageable.getPageNumber(),pageable.getPageSize(),sort);
     }
 
 }
