@@ -15,14 +15,14 @@ public class GrossIncomeDto {
     @JsonProperty("gross_income_id")
     private UUID grossIncomeId;
 
-    @JsonProperty("gross_income")
+    @JsonProperty("gross_income_value")
     @NotBlank(groups = CreateGroup.class)
     @NotNull(groups = CreateGroup.class)
     @ValidDouble
-    private Double grossIncome;
+    private Double grossIncomeValue;
 
     @JsonProperty("person_id")
     @NotBlank(groups = CreateGroup.class)
     @NotNull(groups = CreateGroup.class)
-    private UUID PersonId;
+    private UUID personId;
 }

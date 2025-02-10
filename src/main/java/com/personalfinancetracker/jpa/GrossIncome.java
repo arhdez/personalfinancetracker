@@ -11,10 +11,11 @@ public class GrossIncome {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "grossincome_id")
     private UUID grossIncomeId;
 
     @Column(name = "gross_income_value")
-    private double grossIncomeValue;
+    private Double grossIncomeValue;
 
     @Column(name = "person_id")
     private UUID personId;
