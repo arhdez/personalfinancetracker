@@ -14,28 +14,25 @@ public class SpendDto {
     @JsonProperty("spend_id")
     private UUID spendId;
 
-    @JsonProperty("spend_description")
-    @NotBlank(groups = CreateGroup.class)
-    @NotNull(groups = CreateGroup.class)
-    private String spendDescription;
-
     @JsonProperty("spend_amount")
-    @NotBlank(groups = CreateGroup.class)
     @NotNull(groups = CreateGroup.class)
     private Double spendAmount;
 
-    @JsonProperty("date_of_birth")
+    @JsonProperty("date_spend")
     @NotBlank(groups = CreateGroup.class)
     @NotNull(groups = CreateGroup.class)
-    private String date;
+    private String dateSpend;
 
     @JsonProperty("person_id")
-    @NotBlank(groups = CreateGroup.class)
     @NotNull(groups = CreateGroup.class)
     private UUID personId;
 
     @JsonProperty("category_id")
-    @NotBlank(groups = CreateGroup.class)
     @NotNull(groups = CreateGroup.class)
     private UUID categoryId;
+
+    @JsonProperty("spend_description")
+    @NotBlank(groups = CreateGroup.class)
+    @NotNull(groups = CreateGroup.class)
+    private String spendDescription;
 }
