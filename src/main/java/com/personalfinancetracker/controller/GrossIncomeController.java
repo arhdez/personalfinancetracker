@@ -33,6 +33,7 @@ public class GrossIncomeController {
     @GetMapping("/search")
     public ResponseEntity<List<GrossIncomeDto>> search(
             @RequestParam(required = false) Double grossIncomeValue,
+            @RequestParam(required = false) String filterType, // "greater", "less" or null for exact match
             @RequestParam(required = false) UUID personId,
             @RequestParam(required = false) String orderField,
             @RequestParam(required = false) String orderDirection,
@@ -42,7 +43,7 @@ public class GrossIncomeController {
         request.setGrossIncomeValue(grossIncomeValue);
         request.setPersonId(personId);
 
-        return ResponseEntity.ok(grossIncomeService.searchGrossIncome(request, pageable, orderField, orderDirection));
+        return ResponseEntity.ok(grossIncomeService.searchGrossIncome(request, pageable, orderField, orderDirection, filterType));
     }
 
     @PatchMapping("/{requestedId}")

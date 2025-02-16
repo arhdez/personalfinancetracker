@@ -35,8 +35,8 @@ public class GrossIncomeService {
     }
 
     public List<GrossIncomeDto> searchGrossIncome(GrossIncomeDto request, Pageable pageable,
-                                                  String orderField, String orderDirection) {
-        Specification<GrossIncome> specification = GrossIncomeSpecification.search(request);
+                                                  String orderField, String orderDirection, String filterType) {
+        Specification<GrossIncome> specification = GrossIncomeSpecification.search(request, filterType);
 
         PageRequest pageRequest = createPageRequest(pageable, orderField, orderDirection);
 
