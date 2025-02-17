@@ -5,12 +5,12 @@ import com.personalfinancetracker.jpa.Spend;
 import org.mapstruct.*;
 
 @Mapper(unmappedSourcePolicy = ReportingPolicy.IGNORE, componentModel = "spring")
-public interface SpendsMapper {
+public interface SpendMapper {
 
-    SpendDto spendsToSpendsDto(Spend spend);
+    SpendDto spendToSpendDto(Spend spend);
 
-    Spend spendsDtoToSpends(SpendDto spendDto);
+    Spend spendDtoToSpend(SpendDto spendDto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateSpends(@MappingTarget Spend existingSpend, SpendDto updatedSpendDto);
+    void updateSpend(@MappingTarget Spend existingSpend, SpendDto updatedSpendDto);
 }
