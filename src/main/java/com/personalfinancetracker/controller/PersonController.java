@@ -30,23 +30,5 @@ public class PersonController {
                                                   @RequestParam(defaultValue = "asc") String orderDirection) {
         return ResponseEntity.ok(personService.searchByCriteria(keys, operations, values, page, size, orderField, orderDirection));
     }
-    /*@GetMapping("/search")
-    public ResponseEntity<List<PersonDto>> search(
-            @RequestParam(required = false) String firstName,
-            @RequestParam(required = false) String lastName,
-            @RequestParam(required = false) String email,
-            @RequestParam(required = false) String dateOfBirth,
-            // New dynamic ordering parameters:
-            @RequestParam(required = false) String orderField,
-            @RequestParam(required = false) String orderDirection,
-            Pageable pageable
-    ) {
-        PersonDto request = new PersonDto();
-        request.setFirstName(firstName);
-        request.setLastName(lastName);
-        request.setEmail(email);
-        request.setDateOfBirth(dateOfBirth);
 
-        return ResponseEntity.ok(personService.searchPeople(request, pageable, orderField, orderDirection));
-    }*/
 }
