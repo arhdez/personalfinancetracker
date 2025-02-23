@@ -5,7 +5,6 @@ import com.personalfinancetracker.dto.PersonDto;
 import com.personalfinancetracker.service.PersonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +21,16 @@ public class PersonController {
     private final PersonService personService;
 
     @GetMapping("/search")
+    public ResponseEntity<List<PersonDto>> search(@RequestParam(required = false) List<String> keys,
+                                                  @RequestParam(required = false) List<String> operations,
+                                                  @RequestParam(required = false) List<String> values,
+                                                  @RequestParam(defaultValue = "0") int page,
+                                                  @RequestParam(defaultValue = "10") int size,
+                                                  @RequestParam(required = false) String orderField,
+                                                  @RequestParam(defaultValue = "asc") String orderDirection) {
+        return ResponseEntity.ok(personService.searchByCriteria(keys, operations, values, page, size, orderField, orderDirection));
+    }
+    /*@GetMapping("/search")
     public ResponseEntity<List<PersonDto>> search(
             @RequestParam(required = false) String firstName,
             @RequestParam(required = false) String lastName,
@@ -39,5 +48,5 @@ public class PersonController {
         request.setDateOfBirth(dateOfBirth);
 
         return ResponseEntity.ok(personService.searchPeople(request, pageable, orderField, orderDirection));
-    }
+    }*/
 }

@@ -1,8 +1,9 @@
 package com.personalfinancetracker.model;
 
 import com.personalfinancetracker.dto.SearchCriteria;
-import org.springframework.data.jpa.domain.Specification;
 import jakarta.persistence.criteria.*;
+import org.springframework.data.jpa.domain.Specification;
+
 import java.util.UUID;
 
 public class GenericSpecification<T> implements Specification<T> {
@@ -31,6 +32,13 @@ public class GenericSpecification<T> implements Specification<T> {
                 case ">" -> builder.greaterThan((Expression<Comparable>) path, (Comparable) value);
                 case "<" -> builder.lessThan((Expression<Comparable>) path, (Comparable) value);
                 case "=" -> builder.equal(path, value);
+                case "like" -> {
+                    if (path.getJavaType() == String.class) {
+                        yield builder.like(path.as(String.class), "%" + value + "%");
+                    } else {
+                        throw new IllegalArgumentException("LIKE operation is only supported for String fields.");
+                    }
+                }
                 default -> throw new IllegalArgumentException("Invalid operation: " + criteria.getOperation());
             };
         } else {
