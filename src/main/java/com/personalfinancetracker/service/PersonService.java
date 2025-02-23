@@ -5,6 +5,7 @@ import com.personalfinancetracker.jpa.Person;
 import com.personalfinancetracker.mapper.PersonMapper;
 import com.personalfinancetracker.model.PersonSpecification;
 import com.personalfinancetracker.repository.PersonRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,7 +15,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -42,18 +42,16 @@ public class PersonService {
         }
     }
 
-    public PersonDto createPerson(PersonDto personDto) {
-        return personMapper.personToPersonDto(personRepository.save(personMapper.personDtoToPerson(personDto)));
+    private void createPerson(PersonDto personDto) {
+        personRepository.save(personMapper.personDtoToPerson(personDto));
     }
 
-    public Optional<PersonDto> updatePerson(PersonDto personDto, UUID requestedId) {
-        Optional<Person> existingPersonOptional = personRepository.findById(requestedId);
-        if (existingPersonOptional.isPresent()) {
-            Person existingPerson = existingPersonOptional.get();
-            personMapper.updatePerson(existingPerson, personDto);
-            return Optional.of(personMapper.personToPersonDto(personRepository.save(existingPerson)));
-        }
-        return Optional.empty();
+    private void updatePerson(PersonDto personDto, UUID requestedId) {
+        Person person = personRepository.findById(requestedId)
+                .orElseThrow(() -> new EntityNotFoundException("Person not found with id: " + requestedId));
+
+        personMapper.updatePerson(person, personDto);
+        personRepository.save(person);
     }
 
     private PageRequest createPageRequest(Pageable pageable, String orderField, String orderDirection) {
