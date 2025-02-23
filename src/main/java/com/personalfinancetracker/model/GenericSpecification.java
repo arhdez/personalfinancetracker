@@ -1,6 +1,7 @@
 package com.personalfinancetracker.model;
 
 import com.personalfinancetracker.dto.SearchCriteria;
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -14,7 +15,7 @@ public class GenericSpecification<T> implements Specification<T> {
     }
 
     @Override
-    public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
+    public Predicate toPredicate(@Nonnull Root<T> root, CriteriaQuery<?> query, @Nonnull CriteriaBuilder builder) {
         Path<?> path = getPath(root, criteria.getKey());
         Object value = convertValue(path.getJavaType(), criteria.getValue());
         return createPredicate(builder, path, value, criteria.getOperation());
