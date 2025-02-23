@@ -50,7 +50,7 @@ public class PersonService {
             criteriaList.add(new SearchCriteria(keys.get(i), operations.get(i), values.get(i)));
         }
 
-        return search(criteriaList);  // Calls the existing search method
+        return search(criteriaList, pageable);  // Calls the existing search method
     }
 
     public List<PersonDto> getAllPerson(Pageable pageable){
@@ -60,13 +60,13 @@ public class PersonService {
                 .collect(Collectors.toList());
     }
 
-    private List<PersonDto> search(List<SearchCriteria> criteriaList) {
+    private List<PersonDto> search(List<SearchCriteria> criteriaList, Pageable pageable) {
         Specification<Person> specification = Specification.where(null);
 
         for (SearchCriteria criteria : criteriaList) {
             specification = specification.and(new GenericSpecification<>(criteria));
         }
-        return personRepository.findAll(specification)
+        return personRepository.findAll(specification, pageable)
                 .stream().map(personMapper::personToPersonDto)
                 .collect(Collectors.toList());
     }
@@ -89,21 +89,5 @@ public class PersonService {
         personMapper.updatePerson(person, personDto);
         personRepository.save(person);
     }
-
-    /*private PageRequest createPageRequest(Pageable pageable, String orderField, String orderDirection) {
-        Sort sort = pageable.getSort();
-
-        if (!sort.isSorted() && orderField != null && !orderField.isEmpty()) {
-            Sort.Direction direction = Sort.Direction.ASC;
-            if (orderDirection != null && orderDirection.equalsIgnoreCase("desc")) {
-                direction = Sort.Direction.DESC;
-            }
-            sort = Sort.by(direction, orderField);
-        }
-        if (!sort.isSorted()) {
-            sort = Sort.by(Sort.Direction.ASC, "firstName");
-        }
-        return PageRequest.of(pageable.getPageNumber(),pageable.getPageSize(),sort);
-    }*/
 
 }

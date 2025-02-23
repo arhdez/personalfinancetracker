@@ -52,16 +52,16 @@ public class SpendService {
             criteriaList.add(new SearchCriteria(keys.get(i), operations.get(i), values.get(i)));
         }
 
-        return search(criteriaList);  // Calls the existing search method
+        return search(criteriaList, pageable);  // Calls the existing search method
     }
 
-    private List<SpendDto> search(List<SearchCriteria> criteriaList) {
+    private List<SpendDto> search(List<SearchCriteria> criteriaList, Pageable pageable) {
         Specification<Spend> specification = Specification.where(null);
 
         for (SearchCriteria criteria : criteriaList) {
             specification = specification.and(new GenericSpecification<>(criteria));
         }
-        return spendRepository.findAll(specification)
+        return spendRepository.findAll(specification, pageable)
                 .stream().map(spendMapper::spendToSpendDto)
                 .collect(Collectors.toList());
     }
