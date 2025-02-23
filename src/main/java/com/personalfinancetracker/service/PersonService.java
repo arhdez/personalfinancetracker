@@ -1,12 +1,11 @@
 package com.personalfinancetracker.service;
 
 import com.personalfinancetracker.dto.PersonDto;
-import com.personalfinancetracker.dto.SearchCriteria;
+import com.personalfinancetracker.model.SearchCriteria;
 import com.personalfinancetracker.jpa.Person;
 import com.personalfinancetracker.mapper.PersonMapper;
 import com.personalfinancetracker.model.GenericSpecification;
 import com.personalfinancetracker.repository.PersonRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,10 +13,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -27,33 +25,32 @@ public class PersonService {
 
 
     public void processPerson(PersonDto personDto) {
-        if (personRepository.existsById(personDto.getPersonId())) {
-            updatePerson(personDto, personDto.getPersonId());
-        } else {
-            createPerson(personDto);
-        }
+        personRepository.findById(personDto.getPersonId())
+                .ifPresentOrElse(
+                        person -> updatePerson(person, personDto),
+                        () -> createPerson(personDto)
+                );
     }
 
-    public List<PersonDto> searchByCriteria(List<String> keys, List<String> operations, List<String> values, int page, int size, String orderField, String orderDirection) {
+    public List<PersonDto> searchByCriteria(List<String> keys, List<String> operations, List<String> values, int page,
+                                            int size, String orderField, String orderDirection) {
         Pageable pageable = PageRequest.of(page, size, getSort(orderField, orderDirection));
         // If no filters are provided, return all records
-        if (keys == null || operations == null || values == null) {
-            return getAllPerson(pageable);
+        if (keys == null || operations == null || values == null || keys.isEmpty()) {
+            return getAllPersons(pageable);
         }
 
         if (keys.size() != operations.size() || keys.size() != values.size()) {
             throw new IllegalArgumentException("Keys, operations, and values must have the same size");
         }
 
-        List<SearchCriteria> criteriaList = new ArrayList<>();
-        for (int i = 0; i < keys.size(); i++) {
-            criteriaList.add(new SearchCriteria(keys.get(i), operations.get(i), values.get(i)));
-        }
+        validateCriteria(keys, operations, values);
+        List<SearchCriteria> criteriaList = buildSearchCriteria(keys, operations, values);
 
-        return search(criteriaList, pageable);  // Calls the existing search method
+        return search(criteriaList, pageable);
     }
 
-    public List<PersonDto> getAllPerson(Pageable pageable){
+    public List<PersonDto> getAllPersons(Pageable pageable){
         return personRepository.findAll(pageable)
                 .stream()
                 .map(personMapper::personToPersonDto)
@@ -82,12 +79,27 @@ public class PersonService {
         personRepository.save(personMapper.personDtoToPerson(personDto));
     }
 
-    private void updatePerson(PersonDto personDto, UUID requestedId) {
-        Person person = personRepository.findById(requestedId)
-                .orElseThrow(() -> new EntityNotFoundException("Person not found with id: " + requestedId));
-
+    private void updatePerson(Person person, PersonDto personDto) {
         personMapper.updatePerson(person, personDto);
         personRepository.save(person);
+    }
+
+    /**
+     * Validates search criteria lists have the same size.
+     */
+    private void validateCriteria(List<String> keys, List<String> operations, List<String> values) {
+        if (keys.size() != operations.size() || keys.size() != values.size()) {
+            throw new IllegalArgumentException("Keys, operations, and values must have the same size.");
+        }
+    }
+
+    /**
+     * Converts lists of search parameters into a list of SearchCriteria objects.
+     */
+    private List<SearchCriteria> buildSearchCriteria(List<String> keys, List<String> operations, List<String> values) {
+        return IntStream.range(0, keys.size())
+                .mapToObj(i -> new SearchCriteria(keys.get(i), operations.get(i), values.get(i)))
+                .collect(Collectors.toList());
     }
 
 }

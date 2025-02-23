@@ -1,6 +1,5 @@
 package com.personalfinancetracker.model;
 
-import com.personalfinancetracker.dto.SearchCriteria;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;

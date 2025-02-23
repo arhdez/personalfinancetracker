@@ -1,6 +1,6 @@
 package com.personalfinancetracker.service;
 
-import com.personalfinancetracker.dto.SearchCriteria;
+import com.personalfinancetracker.model.SearchCriteria;
 import com.personalfinancetracker.dto.SpendDto;
 import com.personalfinancetracker.jpa.Spend;
 import com.personalfinancetracker.mapper.SpendMapper;

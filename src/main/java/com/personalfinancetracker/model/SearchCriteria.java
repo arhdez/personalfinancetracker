@@ -1,4 +1,4 @@
-package com.personalfinancetracker.dto;
+package com.personalfinancetracker.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
