@@ -36,17 +36,6 @@ public class SpendService {
         return spendMapper.spendToSpendDto(spendRepository.save(spendMapper.spendDtoToSpend(spendDto)));
     }
 
-    public List<SpendDto> search(List<SearchCriteria> criteriaList) {
-        Specification<Spend> specification = Specification.where(null);
-
-        for (SearchCriteria criteria : criteriaList) {
-            specification = specification.and(new GenericSpecification<>(criteria));
-        }
-        return spendRepository.findAll(specification)
-                .stream().map(spendMapper::spendToSpendDto)
-                .collect(Collectors.toList());
-    }
-
     public List<SpendDto> searchByCriteria(List<String> keys, List<String> operations, List<String> values, int page, int size, String orderField, String orderDirection) {
         Pageable pageable = PageRequest.of(page, size, getSort(orderField, orderDirection));
         // If no filters are provided, return all records
@@ -64,6 +53,17 @@ public class SpendService {
         }
 
         return search(criteriaList);  // Calls the existing search method
+    }
+
+    private List<SpendDto> search(List<SearchCriteria> criteriaList) {
+        Specification<Spend> specification = Specification.where(null);
+
+        for (SearchCriteria criteria : criteriaList) {
+            specification = specification.and(new GenericSpecification<>(criteria));
+        }
+        return spendRepository.findAll(specification)
+                .stream().map(spendMapper::spendToSpendDto)
+                .collect(Collectors.toList());
     }
 
     public List<SpendDto> getAllSpends(Pageable pageable) {
